@@ -22,7 +22,7 @@ pipeline {
     stage('SonarQube Scan') {
       steps {
         sh """mvn sonar:sonar \
-        -Dsonar.host.url=http://ec2-44-195-2-34.compute-1.amazonaws.com:9000 \
+        -Dsonar.host.url=http://ec2-3-238-222-166.compute-1.amazonaws.com:9000 \
         -Dsonar.login=c89638937ac3d8adb9033d90d52a531b82ca943c"""
       }
     }
@@ -32,9 +32,9 @@ pipeline {
       }
 
     }
-    stage('Deploy to us-west-2') {
+    stage('Deploy to DEV') {
       environment {
-        HOSTS = "us-west-2"
+        HOSTS = "dev"
       }
       steps {
         sh "ansible-playbook ${WORKSPACE}/deploy.yaml --extra-vars \"hosts=$HOSTS workspace_path=$WORKSPACE\""
@@ -46,9 +46,9 @@ pipeline {
         input('Do you want to proceed?')
       }
     }
-    stage('Deploy to ap-south-1') {
+    stage('Deploy to PROD') {
       environment {
-        HOSTS = "ap-south-1"
+        HOSTS = "prod"
       }
       steps {
         sh "ansible-playbook ${WORKSPACE}/deploy.yaml --extra-vars \"hosts=$HOSTS workspace_path=$WORKSPACE\""
